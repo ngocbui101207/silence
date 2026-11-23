@@ -90,14 +90,17 @@
       </div>
     </div>
   </main>
-
+  
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+  
   <script src="library-data.js"></script>
   <script src="script.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const params = new URLSearchParams(window.location.search);
       const bookId = params.get('id');
-      let book = window.LibraryStore.getById(bookId);
 
       const tocPanel = document.getElementById('toc-panel');
       const chapterListEl = document.getElementById('chapter-list');
@@ -106,18 +109,39 @@
       const bodyEl = document.getElementById('chapter-body');
       const prevBtn = document.getElementById('prev-chapter');
       const nextBtn = document.getElementById('next-chapter');
+      const addChapterLink = document.getElementById('add-chapter-link');
       const editBookLink = document.getElementById('edit-book-link');
       const deleteBookBtn = document.getElementById('delete-book-btn');
       const editChapterLink = document.getElementById('edit-chapter-link');
       const deleteChapterBtn = document.getElementById('delete-chapter-btn');
+      const manuscriptActions = document.querySelector('.manuscript-actions');
+
+      // Ẩn mặc định các nút sửa/xóa cho độc giả; chỉ hiện khi tác giả đã đăng nhập
+      const toggleAuthorControls = (isLoggedIn) => {
+        const show = Boolean(isLoggedIn);
+        if (addChapterLink) addChapterLink.style.display = show ? 'block' : 'none';
+        if (editBookLink) editBookLink.style.display = show ? 'block' : 'none';
+        if (deleteBookBtn) deleteBookBtn.style.display = show ? 'block' : 'none';
+        if (manuscriptActions) manuscriptActions.style.display = show ? 'flex' : 'none';
+      };
+
+      toggleAuthorControls(false);
+      window.LibraryStore.onAuthChange(toggleAuthorControls);
+
+      titleEl.textContent = 'Opening manuscript...';
+      let book = null;
+      try {
+        book = await window.LibraryStore.getById(bookId);
+      } catch (err) {
+        console.error(err);
+      }
 
       if (!book) {
         if (tocPanel) tocPanel.style.display = 'none';
         dateEl.textContent = 'Archive Notice';
         titleEl.textContent = 'Volume not found';
-        bodyEl.innerHTML = '<p>This book has been deleted or does not exist yet. Return to the bookshelf or open Write to compose your first volume.</p>';
-        editChapterLink.style.display = 'none';
-        deleteChapterBtn.style.display = 'none';
+        bodyEl.innerHTML = '<p>This book has been deleted or does not exist yet.</p>';
+        if (manuscriptActions) manuscriptActions.style.display = 'none';
         prevBtn.disabled = true;
         nextBtn.disabled = true;
         return;
@@ -128,10 +152,8 @@
       document.getElementById('book-title').textContent = book.title;
       document.getElementById('book-desc').textContent = book.desc;
       document.getElementById('topbar-tag').textContent = book.tag;
-      document.getElementById('add-chapter-link').href =
-        `write.html?mode=chapter&book=${encodeURIComponent(book.id)}`;
-      editBookLink.href =
-        `write.html?mode=edit&book=${encodeURIComponent(book.id)}`;
+      addChapterLink.href = `write.html?mode=chapter&book=${encodeURIComponent(book.id)}`;
+      editBookLink.href = `write.html?mode=edit&book=${encodeURIComponent(book.id)}`;
 
       let activeIndex = Number(params.get('ch')) || 0;
 
@@ -153,9 +175,8 @@
         if (!book.chapters.length) {
           dateEl.textContent = 'Empty Volume';
           titleEl.textContent = 'No chapters left';
-          bodyEl.innerHTML = '<p>All chapters in this volume have been removed. Use "+ Write New Chapter" to add a new one.</p>';
-          editChapterLink.style.display = 'none';
-          deleteChapterBtn.style.display = 'none';
+          bodyEl.innerHTML = '<p>All chapters in this volume have been removed.</p>';
+          if (manuscriptActions) manuscriptActions.style.display = 'none';
           prevBtn.disabled = true;
           nextBtn.disabled = true;
           return;
@@ -164,10 +185,8 @@
         activeIndex = Math.max(0, Math.min(index, book.chapters.length - 1));
         const ch = book.chapters[activeIndex];
 
-        editChapterLink.style.display = 'inline-block';
         editChapterLink.href =
           `write.html?mode=edit&book=${encodeURIComponent(book.id)}&ch=${encodeURIComponent(ch.id)}`;
-        deleteChapterBtn.style.display = 'inline-block';
 
         dateEl.textContent = ch.date || 'Manuscript Entry';
         titleEl.textContent = ch.title;
@@ -192,19 +211,26 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };
 
-      deleteChapterBtn.addEventListener('click', () => {
+      deleteChapterBtn.addEventListener('click', async () => {
         const ch = book.chapters[activeIndex];
-        if (!ch) return;
-        if (!window.confirm(`Delete chapter "${ch.title}"?`)) return;
-        book = window.LibraryStore.deleteChapter(book.id, ch.id);
-        renderChapterList();
-        renderChapter(activeIndex);
+        if (!ch || !window.confirm(`Delete chapter "${ch.title}"?`)) return;
+        try {
+          book = await window.LibraryStore.deleteChapter(book.id, ch.id);
+          renderChapterList();
+          renderChapter(activeIndex);
+        } catch (err) {
+          alert(`Unable to delete chapter: ${err.message}`);
+        }
       });
 
-      deleteBookBtn.addEventListener('click', () => {
+      deleteBookBtn.addEventListener('click', async () => {
         if (!window.confirm(`Delete "${book.title}" and all its chapters permanently?`)) return;
-        window.LibraryStore.deleteBook(book.id);
-        window.location.href = 'index.html#bookshelf';
+        try {
+          await window.LibraryStore.deleteBook(book.id);
+          window.location.href = 'index.html#bookshelf';
+        } catch (err) {
+          alert(`Unable to delete volume: ${err.message}`);
+        }
       });
 
       prevBtn.addEventListener('click', () => {

@@ -56,7 +56,19 @@ document.addEventListener('DOMContentLoaded', () => {
   if (shelfContainer && previewCard && window.LibraryStore) {
     let updateTimer;
     let currentBook = null;
+    let cachedBooks = [];
+    const previewActionsRight = previewCard.querySelector('.reading-actions-right');
     const isHoverDevice = () => window.matchMedia('(hover: hover)').matches;
+
+    const syncAuthorUI = (user) => {
+      if (previewActionsRight) {
+        previewActionsRight.style.display = user ? 'flex' : 'none';
+      }
+      const emptyBtn = shelfContainer.querySelector('.shelf-empty-btn');
+      if (emptyBtn) {
+        emptyBtn.style.display = user ? 'inline-block' : 'none';
+      }
+    };
 
     const updatePreview = (book) => {
       if (!book) return;
@@ -83,35 +95,51 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     if (previewDelete) {
-      previewDelete.addEventListener('click', () => {
+      previewDelete.addEventListener('click', async () => {
         if (!currentBook) return;
         const ok = window.confirm(`Delete "${currentBook.title}" and all its chapters?`);
         if (!ok) return;
-        window.LibraryStore.deleteBook(currentBook.id);
-        currentBook = null;
-        renderBookshelf();
+        try {
+          await window.LibraryStore.deleteBook(currentBook.id);
+          currentBook = null;
+          await renderBookshelf();
+        } catch (err) {
+          alert(`Unable to delete: ${err.message}`);
+        }
       });
     }
 
-    const renderBookshelf = () => {
-      const books = window.LibraryStore.getAll();
+    const renderBookshelf = async () => {
+      if (!cachedBooks.length) {
+        shelfContainer.innerHTML = `<div class="shelf-empty"><p>Opening the library...</p></div>`;
+      }
+
+      try {
+        cachedBooks = await window.LibraryStore.getAll();
+      } catch (err) {
+        shelfContainer.innerHTML = `<div class="shelf-empty"><p>Could not load books right now.</p></div>`;
+        console.error(err);
+        return;
+      }
+
       shelfContainer.innerHTML = '';
 
-      if (!books.length) {
+      if (!cachedBooks.length) {
         currentBook = null;
         previewCard.hidden = true;
         shelfContainer.innerHTML = `
           <div class="shelf-empty">
-            <p>Your bookshelf is empty and ready for your first story.</p>
-            <a href="write.html" class="shelf-empty-btn">+ Write Your First Book</a>
+            <p>The bookshelf is waiting for its first story.</p>
+            <a href="write.html" class="shelf-empty-btn" style="display: none;">+ Write Your First Book</a>
           </div>
         `;
+        syncAuthorUI(window.LibraryStore.isAuthor());
         return;
       }
 
       previewCard.hidden = false;
 
-      books.forEach((book, idx) => {
+      cachedBooks.forEach((book, idx) => {
         const usePaperLabel = book.color === 'moss' || book.color === 'rose';
         const titleClass = usePaperLabel ? 'spine-label' : 'spine-title';
         const roman = window.LibraryStore.toRoman(idx + 1);
@@ -167,20 +195,14 @@ document.addEventListener('DOMContentLoaded', () => {
         shelfContainer.appendChild(btn);
       });
 
-      const keepCurrent = currentBook && books.find((b) => b.id === currentBook.id);
-      updatePreview(keepCurrent || books[0]);
+      const keepCurrent = currentBook && cachedBooks.find((b) => b.id === currentBook.id);
+      updatePreview(keepCurrent || cachedBooks[0]);
+      syncAuthorUI(window.LibraryStore.isAuthor());
     };
 
+    window.LibraryStore.onAuthChange(syncAuthorUI);
     renderBookshelf();
-
-    window.addEventListener('storage', (event) => {
-      if (event.key === window.LibraryStore.STORAGE_KEY) {
-        renderBookshelf();
-      }
-    });
-    window.addEventListener('focus', renderBookshelf);
   }
-
   const accordionGroups = document.querySelectorAll('[data-accordion]');
   accordionGroups.forEach((group) => {
     const triggers = group.querySelectorAll('.accordion-trigger');

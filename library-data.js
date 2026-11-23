@@ -1,9 +1,21 @@
 (function (global) {
-  const STORAGE_KEY = 'mourir_damour_library_v1';
-  try {
-    localStorage.removeItem('laplume_library_v1');
-  } catch (e) {
+  const firebaseConfig = {
+    apiKey: "AIzaSyB2Knzep3wjPtA12UFBfIu-kCBl0w0idzg",
+    authDomain: "silence-7dc4d.firebaseapp.com",
+    projectId: "silence-7dc4d",
+    storageBucket: "silence-7dc4d.firebasestorage.app",
+    messagingSenderId: "852909474801",
+    appId: "1:852909474801:web:b8630c377cb8c5b0f53a50",
+    measurementId: "G-YP5SKH82G5"
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
   }
+
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+  const booksCol = db.collection('books');
 
   const toRoman = (num) => {
     const map = [
@@ -30,46 +42,6 @@
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '') || `book-${Date.now()}`;
 
-  const reindexVolumes = (books) =>
-    books.map((book, idx) => {
-      const genre =
-        book.genre ||
-        ((book.volumeLabel || '').split('•')[1] || 'Personal Writing').trim();
-      return {
-        ...book,
-        genre,
-        volumeLabel: `Volume ${toRoman(idx + 1)} • ${genre}`
-      };
-    });
-
-  const saveAll = (books) => {
-    try {
-      const normalized = reindexVolumes(books);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
-      return normalized;
-    } catch (e) {
-      console.warn('Could not save to localStorage:', e);
-      return books;
-    }
-  };
-
-  const getAll = () => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return [];
-      const parsed = JSON.parse(raw);
-      return Array.isArray(parsed) ? parsed : [];
-    } catch (e) {
-      return [];
-    }
-  };
-
-  const getById = (id) => {
-    const books = getAll();
-    if (!books.length) return null;
-    return books.find((b) => b.id === id) || books[0];
-  };
-
   const todayFormatted = () =>
     new Date().toLocaleDateString('en-US', {
       month: 'long',
@@ -77,26 +49,48 @@
       year: 'numeric'
     });
 
-  const addBook = ({ title, genre, tag, color, size, desc, chapterTitle, chapterContent }) => {
-    const books = getAll();
-    const nextNum = books.length + 1;
+  const formatBook = (doc, index = 0) => {
+    const data = doc.data();
+    const genre = (data.genre || 'Personal Writing').trim();
+    return {
+      id: doc.id,
+      ...data,
+      genre,
+      chapters: Array.isArray(data.chapters) ? data.chapters : [],
+      volumeLabel: `Volume ${toRoman(index + 1)} • ${genre}`
+    };
+  };
+
+  const getAll = async () => {
+    const snap = await booksCol.orderBy('createdAt', 'asc').get();
+    return snap.docs.map((doc, idx) => formatBook(doc, idx));
+  };
+
+  const getById = async (id) => {
+    const books = await getAll();
+    if (!books.length) return null;
+    return books.find((b) => b.id === id) || books[0];
+  };
+
+  const addBook = async ({ title, genre, tag, color, size, desc, chapterTitle, chapterContent }) => {
+    const existing = await getAll();
+    const nextNum = existing.length + 1;
     const baseId = slugify(title);
-    const uniqueId = books.some((b) => b.id === baseId)
+    const uniqueId = existing.some((b) => b.id === baseId)
       ? `${baseId}-${Date.now().toString().slice(-4)}`
       : baseId;
     const ornaments = ['❦', '✦', '❖', '❧', '✧'];
     const cleanGenre = (genre || 'Personal Writing').trim();
 
-    const newBook = {
-      id: uniqueId,
-      genre: cleanGenre,
-      volumeLabel: `Volume ${toRoman(nextNum)} • ${cleanGenre}`,
+    const payload = {
       title: title.trim(),
+      genre: cleanGenre,
       desc: desc.trim(),
       tag: (tag || 'Personal Edition').trim(),
       color: color || 'forest',
       size: size || 'tall',
       ornament: ornaments[(nextNum - 1) % ornaments.length],
+      createdAt: Date.now(),
       chapters: [
         {
           id: `ch-${Date.now()}`,
@@ -107,42 +101,34 @@
       ]
     };
 
-    books.push(newBook);
-    const saved = saveAll(books);
-    return saved.find((b) => b.id === uniqueId) || newBook;
+    await booksCol.doc(uniqueId).set(payload);
+    return {
+      id: uniqueId,
+      ...payload,
+      volumeLabel: `Volume ${toRoman(nextNum)} • ${cleanGenre}`
+    };
   };
 
-  const updateBook = (bookId, { title, genre, tag, color, size, desc }) => {
-    const books = getAll();
-    const idx = books.findIndex((b) => b.id === bookId);
-    if (idx === -1) return null;
-
-    const current = books[idx];
-    const cleanGenre = (genre || current.genre || 'Personal Writing').trim();
-    books[idx] = {
-      ...current,
+  const updateBook = async (bookId, { title, genre, tag, color, size, desc }) => {
+    const cleanGenre = (genre || 'Personal Writing').trim();
+    await booksCol.doc(bookId).update({
       title: title.trim(),
       genre: cleanGenre,
-      volumeLabel: `Volume ${toRoman(idx + 1)} • ${cleanGenre}`,
       desc: desc.trim(),
-      tag: (tag || current.tag || 'Personal Edition').trim(),
-      color: color || current.color,
-      size: size || current.size
-    };
-
-    const saved = saveAll(books);
-    return saved.find((b) => b.id === bookId) || books[idx];
+      tag: (tag || 'Personal Edition').trim(),
+      color: color || 'forest',
+      size: size || 'tall'
+    });
+    return getById(bookId);
   };
 
-  const deleteBook = (bookId) => {
-    const remaining = getAll().filter((b) => b.id !== bookId);
-    return saveAll(remaining);
+  const deleteBook = async (bookId) => {
+    await booksCol.doc(bookId).delete();
   };
 
-  const addChapter = (bookId, { title, content }) => {
-    const books = getAll();
-    const target = books.find((b) => b.id === bookId);
-    if (!target) return null;
+  const addChapter = async (bookId, { title, content }) => {
+    const book = await getById(bookId);
+    if (!book) return null;
 
     const newChapter = {
       id: `ch-${Date.now()}`,
@@ -151,37 +137,42 @@
       content: content.trim()
     };
 
-    target.chapters.push(newChapter);
-    saveAll(books);
-    return { book: target, chapter: newChapter };
+    const chapters = [...book.chapters, newChapter];
+    await booksCol.doc(bookId).update({ chapters });
+    return { book: { ...book, chapters }, chapter: newChapter };
   };
 
-  const updateChapter = (bookId, chapterId, { title, content }) => {
-    const books = getAll();
-    const book = books.find((b) => b.id === bookId);
+  const updateChapter = async (bookId, chapterId, { title, content }) => {
+    const book = await getById(bookId);
     if (!book) return null;
 
-    const chapter = book.chapters.find((ch) => ch.id === chapterId);
-    if (!chapter) return null;
+    let updatedChapter = null;
+    const chapters = book.chapters.map((ch) => {
+      if (ch.id !== chapterId) return ch;
+      updatedChapter = { ...ch, title: title.trim(), content: content.trim() };
+      return updatedChapter;
+    });
 
-    chapter.title = title.trim();
-    chapter.content = content.trim();
-    saveAll(books);
-    return { book, chapter };
+    if (!updatedChapter) return null;
+    await booksCol.doc(bookId).update({ chapters });
+    return { book: { ...book, chapters }, chapter: updatedChapter };
   };
 
-  const deleteChapter = (bookId, chapterId) => {
-    const books = getAll();
-    const target = books.find((b) => b.id === bookId);
-    if (!target) return null;
+  const deleteChapter = async (bookId, chapterId) => {
+    const book = await getById(bookId);
+    if (!book) return null;
 
-    target.chapters = target.chapters.filter((ch) => ch.id !== chapterId);
-    saveAll(books);
-    return target;
+    const chapters = book.chapters.filter((ch) => ch.id !== chapterId);
+    await booksCol.doc(bookId).update({ chapters });
+    return { ...book, chapters };
   };
+
+  const login = (email, password) => auth.signInWithEmailAndPassword(email, password);
+  const logout = () => auth.signOut();
+  const onAuthChange = (cb) => auth.onAuthStateChanged(cb);
+  const isAuthor = () => Boolean(auth.currentUser);
 
   global.LibraryStore = {
-    STORAGE_KEY,
     toRoman,
     getAll,
     getById,
@@ -190,6 +181,10 @@
     deleteBook,
     addChapter,
     updateChapter,
-    deleteChapter
+    deleteChapter,
+    login,
+    logout,
+    onAuthChange,
+    isAuthor
   };
 })(window);

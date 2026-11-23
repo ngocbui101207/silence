@@ -58,50 +58,73 @@
       </header>
 
       <section class="studio-card">
-        <div class="mode-tabs" role="tablist">
-          <button type="button" class="mode-tab is-active" id="tab-new-book" role="tab" aria-selected="true">
-            + Publish new book
-          </button>
-          <button type="button" class="mode-tab" id="tab-new-chapter" role="tab" aria-selected="false">
-            + Add chapter
-          </button>
-          <button type="button" class="mode-tab" id="tab-edit" role="tab" aria-selected="false">
-            Edit / Delete existing
-          </button>
+        <div id="auth-gate">
+          <p class="eyebrow">Private Access</p>
+          <h2 style="margin-bottom: 1rem; color: var(--color-forest);">Author Sign In</h2>
+          <form class="studio-form" id="login-form">
+            <div class="form-group">
+              <label for="login-email">Author Email</label>
+              <input id="login-email" class="form-control" type="email" required autocomplete="username">
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input id="login-password" class="form-control" type="password" required autocomplete="current-password">
+            </div>
+            <p id="login-error" style="color: #9A4A40; font-size: 0.95rem; display: none;"></p>
+            <div>
+              <button type="submit" class="btn btn-primary">Unlock Writing Desk</button>
+            </div>
+          </form>
         </div>
-
-        <form class="studio-form" id="form-new-book">
-          <div class="form-row">
-            <div class="form-group">
-              <label for="book-title-input">Book title</label>
-              <input id="book-title-input" class="form-control" type="text" required placeholder="e.g. My first story">
-            </div>
-            <div class="form-group">
-              <label for="book-genre-input">Genre / Subtitle</label>
-              <input id="book-genre-input" class="form-control" type="text" placeholder="e.g., Short novel, poetry">
-            </div>
+        <div id="writer-workspace" hidden>
+          <div class="subpage-topbar" style="margin-bottom: 1.5rem;">
+            <span id="author-status" style="font-size: 0.95rem; color: var(--color-teal);"></span>
+            <button type="button" class="btn-danger-link" id="logout-btn">Sign Out</button>
+          </div>
+          <div class="mode-tabs" role="tablist">
+            <button type="button" class="mode-tab is-active" id="tab-new-book" role="tab" aria-selected="true">
+              + Publish new book
+            </button>
+            <button type="button" class="mode-tab" id="tab-new-chapter" role="tab" aria-selected="false">
+              + Add chapter
+            </button>
+            <button type="button" class="mode-tab" id="tab-edit" role="tab" aria-selected="false">
+              Edit / Delete existing
+            </button>
           </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="book-color-input">Spine &amp; Cover Binding Color</label>
-              <select id="book-color-input" class="form-control">
-                <option value="forest">Deep forest</option>
-                <option value="teal">Slate teal</option>
-                <option value="moss">Vintage moss</option>
-                <option value="rose">Dusty rose</option>
-                <option value="cream">Antique parchment</option>
-              </select>
+          <form class="studio-form" id="form-new-book">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="book-title-input">Book title</label>
+                <input id="book-title-input" class="form-control" type="text" required placeholder="e.g. My first story">
+              </div>
+              <div class="form-group">
+                <label for="book-genre-input">Genre / Subtitle</label>
+                <input id="book-genre-input" class="form-control" type="text" placeholder="e.g., Short novel, poetry">
+              </div>
             </div>
-            <div class="form-group">
-              <label for="book-size-input">Volume height</label>
-              <select id="book-size-input" class="form-control">
-                <option value="tall">Le grand format</option>
-                <option value="grand">Le format moyen</option>
-                <option value="medium">Le format poche</option>
-              </select>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="book-color-input">Spine &amp; Cover Binding Color</label>
+                <select id="book-color-input" class="form-control">
+                  <option value="forest">Deep forest</option>
+                  <option value="teal">Slate teal</option>
+                  <option value="moss">Vintage moss</option>
+                  <option value="rose">Dusty rose</option>
+                  <option value="cream">Antique parchment</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="book-size-input">Volume height</label>
+                <select id="book-size-input" class="form-control">
+                  <option value="tall">Le grand format</option>
+                  <option value="grand">Le format moyen</option>
+                  <option value="medium">Le format poche</option>
+                </select>
+              </div>
             </div>
-          </div>
 
           <div class="form-row">
             <div class="form-group">
@@ -127,7 +150,9 @@
           <div>
             <button type="submit" class="btn btn-primary">Save &amp; Place on bookshelf</button>
           </div>
-        </form>
+          </form>
+        </div>
+        
 
         <form class="studio-form" id="form-new-chapter" style="display: none;">
           <div class="form-group">
@@ -248,10 +273,21 @@
     </div>
   </main>
 
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+
   <script src="library-data.js"></script>
   <script src="script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      const authGate = document.getElementById('auth-gate');
+      const writerWorkspace = document.getElementById('writer-workspace');
+      const loginForm = document.getElementById('login-form');
+      const loginError = document.getElementById('login-error');
+      const authorStatus = document.getElementById('author-status');
+      const logoutBtn = document.getElementById('logout-btn');
+
       const tabBook = document.getElementById('tab-new-book');
       const tabChapter = document.getElementById('tab-new-chapter');
       const tabEdit = document.getElementById('tab-edit');
@@ -271,16 +307,48 @@
       const formEditChapter = document.getElementById('form-edit-chapter');
 
       const params = new URLSearchParams(window.location.search);
+      let cachedBooks = [];
+      let initialized = false;
 
-      const populateBookSelect = (selectedId) => {
-        const books = window.LibraryStore.getAll();
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        loginError.style.display = 'none';
+        const btn = loginForm.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          await window.LibraryStore.login(
+            document.getElementById('login-email').value.trim(),
+            document.getElementById('login-password').value
+          );
+          loginForm.reset();
+        } catch (err) {
+          console.error(err);
+          loginError.textContent =
+            err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'
+              ? 'Incorrect email or password. Please try again.'
+              : `Sign-in error: ${err.message}`;
+          loginError.style.display = 'block';
+        } finally {
+          btn.disabled = false;
+        }
+      });
+
+      logoutBtn.addEventListener('click', () => window.LibraryStore.logout());
+
+      const refreshBooks = async () => {
+        cachedBooks = await window.LibraryStore.getAll();
+        return cachedBooks;
+      };
+
+      const populateBookSelect = async (selectedId) => {
+        const books = await refreshBooks();
         const submitBtn = formChapter.querySelector('button[type="submit"]');
         bookSelect.innerHTML = '';
 
         if (!books.length) {
           const opt = document.createElement('option');
           opt.value = '';
-          opt.textContent = 'No books on shelf yet - publish a new book first';
+          opt.textContent = 'No books on shelf yet — publish a new book first';
           bookSelect.appendChild(opt);
           if (submitBtn) submitBtn.disabled = true;
           return;
@@ -336,8 +404,8 @@
         chContentInput.value = activeCh.content;
       };
 
-      const loadEditWorkspace = (preferredBookId, preferredChapterId) => {
-        const books = window.LibraryStore.getAll();
+      const loadEditWorkspace = async (preferredBookId, preferredChapterId) => {
+        const books = await refreshBooks();
         if (!books.length) {
           editEmptyMsg.style.display = 'block';
           editWorkspace.style.display = 'none';
@@ -359,8 +427,7 @@
         const selected = books.find((b) => b.id === editBookSelect.value) || books[0];
         editBookSelect.value = selected.id;
         document.getElementById('edit-book-title').value = selected.title;
-        document.getElementById('edit-book-genre').value =
-          selected.genre || ((selected.volumeLabel || '').split('•')[1] || '').trim();
+        document.getElementById('edit-book-genre').value = selected.genre || '';
         document.getElementById('edit-book-color').value = selected.color || 'forest';
         document.getElementById('edit-book-size').value = selected.size || 'tall';
         document.getElementById('edit-book-tag').value = selected.tag || '';
@@ -369,7 +436,7 @@
         loadChapterFields(selected, preferredChapterId);
       };
 
-      const switchMode = (mode) => {
+      const switchMode = async (mode) => {
         const isBook = mode === 'book';
         const isChapter = mode === 'chapter';
         const isEdit = mode === 'edit';
@@ -386,8 +453,8 @@
         panelEdit.style.display = isEdit ? 'block' : 'none';
         notice.classList.remove('is-visible');
 
-        if (isChapter) populateBookSelect(bookSelect.value || params.get('book'));
-        if (isEdit) loadEditWorkspace(editBookSelect.value || params.get('book'), params.get('ch'));
+        if (isChapter) await populateBookSelect(bookSelect.value || params.get('book'));
+        if (isEdit) await loadEditWorkspace(editBookSelect.value || params.get('book'), params.get('ch'));
       };
 
       tabBook.addEventListener('click', () => switchMode('book'));
@@ -399,118 +466,167 @@
       });
 
       editChapterSelect.addEventListener('change', () => {
-        const book = window.LibraryStore.getById(editBookSelect.value);
+        const book = cachedBooks.find((b) => b.id === editBookSelect.value);
         loadChapterFields(book, editChapterSelect.value);
       });
 
-      formBook.addEventListener('submit', (e) => {
+      formBook.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const saved = window.LibraryStore.addBook({
-          title: document.getElementById('book-title-input').value,
-          genre: document.getElementById('book-genre-input').value,
-          tag: document.getElementById('book-tag-input').value,
-          color: document.getElementById('book-color-input').value,
-          size: document.getElementById('book-size-input').value,
-          desc: document.getElementById('book-desc-input').value,
-          chapterTitle: document.getElementById('first-chapter-title').value,
-          chapterContent: document.getElementById('first-chapter-content').value
-        });
-
-        formBook.reset();
-        populateBookSelect(saved.id);
-        noticeText.textContent = `"${saved.title}" has been bound and placed on the homepage bookshelf.`;
-        noticeReadLink.style.display = 'inline';
-        noticeReadLink.href = `reader.html?id=${encodeURIComponent(saved.id)}`;
-        notice.classList.add('is-visible');
+        const btn = formBook.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          const saved = await window.LibraryStore.addBook({
+            title: document.getElementById('book-title-input').value,
+            genre: document.getElementById('book-genre-input').value,
+            tag: document.getElementById('book-tag-input').value,
+            color: document.getElementById('book-color-input').value,
+            size: document.getElementById('book-size-input').value,
+            desc: document.getElementById('book-desc-input').value,
+            chapterTitle: document.getElementById('first-chapter-title').value,
+            chapterContent: document.getElementById('first-chapter-content').value
+          });
+          formBook.reset();
+          await populateBookSelect(saved.id);
+          noticeText.textContent = `"${saved.title}" is now live on the bookshelf.`;
+          noticeReadLink.style.display = 'inline';
+          noticeReadLink.href = `reader.html?id=${encodeURIComponent(saved.id)}`;
+          notice.classList.add('is-visible');
+        } catch (err) {
+          alert(`Could not save book: ${err.message}`);
+        } finally {
+          btn.disabled = false;
+        }
       });
 
-      formChapter.addEventListener('submit', (e) => {
+      formChapter.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const bookId = bookSelect.value;
-        const result = window.LibraryStore.addChapter(bookId, {
-          title: document.getElementById('append-chapter-title').value,
-          content: document.getElementById('append-chapter-content').value
-        });
-
-        if (!result) return;
-        formChapter.reset();
-        populateBookSelect(bookId);
-        const lastIdx = result.book.chapters.length - 1;
-        noticeText.textContent = `Added "${result.chapter.title}" to "${result.book.title}".`;
-        noticeReadLink.style.display = 'inline';
-        noticeReadLink.href = `reader.html?id=${encodeURIComponent(bookId)}&ch=${lastIdx}`;
-        notice.classList.add('is-visible');
+        const btn = formChapter.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          const bookId = bookSelect.value;
+          const result = await window.LibraryStore.addChapter(bookId, {
+            title: document.getElementById('append-chapter-title').value,
+            content: document.getElementById('append-chapter-content').value
+          });
+          if (!result) return;
+          formChapter.reset();
+          await populateBookSelect(bookId);
+          const lastIdx = result.book.chapters.length - 1;
+          noticeText.textContent = `Published "${result.chapter.title}" to "${result.book.title}".`;
+          noticeReadLink.style.display = 'inline';
+          noticeReadLink.href = `reader.html?id=${encodeURIComponent(bookId)}&ch=${lastIdx}`;
+          notice.classList.add('is-visible');
+        } catch (err) {
+          alert(`Could not add chapter: ${err.message}`);
+        } finally {
+          btn.disabled = false;
+        }
       });
 
-      formEditBook.addEventListener('submit', (e) => {
+      formEditBook.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const updated = window.LibraryStore.updateBook(editBookSelect.value, {
-          title: document.getElementById('edit-book-title').value,
-          genre: document.getElementById('edit-book-genre').value,
-          tag: document.getElementById('edit-book-tag').value,
-          color: document.getElementById('edit-book-color').value,
-          size: document.getElementById('edit-book-size').value,
-          desc: document.getElementById('edit-book-desc').value
-        });
-        if (!updated) return;
-        loadEditWorkspace(updated.id, editChapterSelect.value);
-        noticeText.textContent = `Saved changes to "${updated.title}".`;
-        noticeReadLink.style.display = 'inline';
-        noticeReadLink.href = `reader.html?id=${encodeURIComponent(updated.id)}`;
-        notice.classList.add('is-visible');
+        const btn = formEditBook.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          const updated = await window.LibraryStore.updateBook(editBookSelect.value, {
+            title: document.getElementById('edit-book-title').value,
+            genre: document.getElementById('edit-book-genre').value,
+            tag: document.getElementById('edit-book-tag').value,
+            color: document.getElementById('edit-book-color').value,
+            size: document.getElementById('edit-book-size').value,
+            desc: document.getElementById('edit-book-desc').value
+          });
+          if (!updated) return;
+          await loadEditWorkspace(updated.id, editChapterSelect.value);
+          noticeText.textContent = `Saved changes to "${updated.title}".`;
+          noticeReadLink.style.display = 'inline';
+          noticeReadLink.href = `reader.html?id=${encodeURIComponent(updated.id)}`;
+          notice.classList.add('is-visible');
+        } catch (err) {
+          alert(`Could not update book: ${err.message}`);
+        } finally {
+          btn.disabled = false;
+        }
       });
 
-      document.getElementById('btn-delete-selected-book').addEventListener('click', () => {
-        const book = window.LibraryStore.getById(editBookSelect.value);
+      document.getElementById('btn-delete-selected-book').addEventListener('click', async () => {
+        const book = cachedBooks.find((b) => b.id === editBookSelect.value);
         if (!book || !window.confirm(`Delete "${book.title}" permanently?`)) return;
-        window.LibraryStore.deleteBook(book.id);
-        loadEditWorkspace(null, null);
-        populateBookSelect(null);
-        noticeText.textContent = `Deleted "${book.title}" from the bookshelf.`;
-        noticeReadLink.style.display = 'none';
-        notice.classList.add('is-visible');
+        try {
+          await window.LibraryStore.deleteBook(book.id);
+          await loadEditWorkspace(null, null);
+          await populateBookSelect(null);
+          noticeText.textContent = `Deleted "${book.title}" from the bookshelf.`;
+          noticeReadLink.style.display = 'none';
+          notice.classList.add('is-visible');
+        } catch (err) {
+          alert(`Could not delete book: ${err.message}`);
+        }
       });
 
-      formEditChapter.addEventListener('submit', (e) => {
+      formEditChapter.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const result = window.LibraryStore.updateChapter(
-          editBookSelect.value,
-          editChapterSelect.value,
-          {
-            title: document.getElementById('edit-chapter-title').value,
-            content: document.getElementById('edit-chapter-content').value
-          }
-        );
-        if (!result) return;
-        const chIdx = result.book.chapters.findIndex((c) => c.id === result.chapter.id);
-        loadChapterFields(result.book, result.chapter.id);
-        noticeText.textContent = `Saved edits to "${result.chapter.title}".`;
-        noticeReadLink.style.display = 'inline';
-        noticeReadLink.href = `reader.html?id=${encodeURIComponent(result.book.id)}&ch=${Math.max(0, chIdx)}`;
-        notice.classList.add('is-visible');
+        const btn = formEditChapter.querySelector('button[type="submit"]');
+        btn.disabled = true;
+        try {
+          const result = await window.LibraryStore.updateChapter(
+            editBookSelect.value,
+            editChapterSelect.value,
+            {
+              title: document.getElementById('edit-chapter-title').value,
+              content: document.getElementById('edit-chapter-content').value
+            }
+          );
+          if (!result) return;
+          const chIdx = result.book.chapters.findIndex((c) => c.id === result.chapter.id);
+          await loadEditWorkspace(result.book.id, result.chapter.id);
+          noticeText.textContent = `Saved edits to "${result.chapter.title}".`;
+          noticeReadLink.style.display = 'inline';
+          noticeReadLink.href = `reader.html?id=${encodeURIComponent(result.book.id)}&ch=${Math.max(0, chIdx)}`;
+          notice.classList.add('is-visible');
+        } catch (err) {
+          alert(`Could not update chapter: ${err.message}`);
+        } finally {
+          btn.disabled = false;
+        }
       });
 
-      document.getElementById('btn-delete-selected-chapter').addEventListener('click', () => {
-        const book = window.LibraryStore.getById(editBookSelect.value);
+      document.getElementById('btn-delete-selected-chapter').addEventListener('click', async () => {
+        const book = cachedBooks.find((b) => b.id === editBookSelect.value);
         const ch = book && book.chapters.find((c) => c.id === editChapterSelect.value);
         if (!ch || !window.confirm(`Delete chapter "${ch.title}"?`)) return;
-        const updatedBook = window.LibraryStore.deleteChapter(book.id, ch.id);
-        loadChapterFields(updatedBook, null);
-        noticeText.textContent = `Deleted chapter "${ch.title}".`;
-        noticeReadLink.style.display = 'inline';
-        noticeReadLink.href = `reader.html?id=${encodeURIComponent(book.id)}`;
-        notice.classList.add('is-visible');
+        try {
+          await window.LibraryStore.deleteChapter(book.id, ch.id);
+          await loadEditWorkspace(book.id, null);
+          noticeText.textContent = `Deleted chapter "${ch.title}".`;
+          noticeReadLink.style.display = 'inline';
+          noticeReadLink.href = `reader.html?id=${encodeURIComponent(book.id)}`;
+          notice.classList.add('is-visible');
+        } catch (err) {
+          alert(`Could not delete chapter: ${err.message}`);
+        }
       });
 
-      populateBookSelect(params.get('book'));
-      if (params.get('mode') === 'chapter') {
-        switchMode('chapter');
-      } else if (params.get('mode') === 'edit') {
-        switchMode('edit');
-        if (params.get('ch')) {
-          formEditChapter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.LibraryStore.onAuthChange(async (user) => {
+        authGate.hidden = Boolean(user);
+        writerWorkspace.hidden = !user;
+
+        if (!user) return;
+        authorStatus.textContent = `Signed in as ${user.email}`;
+
+        if (!initialized) {
+          initialized = true;
+          await populateBookSelect(params.get('book'));
+          if (params.get('mode') === 'chapter') {
+            await switchMode('chapter');
+          } else if (params.get('mode') === 'edit') {
+            await switchMode('edit');
+            if (params.get('ch')) {
+              formEditChapter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }
         }
-      }
+      });
     });
   </script>
 </body>
