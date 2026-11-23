@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  /* ------------------------------------------------------------------------
-     1. Responsive Mobile Navigation (Dùng chung cho cả 3 trang)
-     ------------------------------------------------------------------------ */
   const navToggle = document.querySelector('.nav-toggle');
   const siteNav = document.getElementById('primary-nav');
   const navLinks = document.querySelectorAll('.nav-link');
@@ -30,9 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ------------------------------------------------------------------------
-     2. Header Shadow on Scroll
-     ------------------------------------------------------------------------ */
   const header = document.querySelector('.site-header');
   const handleScroll = () => {
     if (header) header.classList.toggle('is-scrolled', window.scrollY > 12);
@@ -40,9 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('scroll', handleScroll, { passive: true });
   handleScroll();
 
-  /* ------------------------------------------------------------------------
-     3. Dynamic 3D Bookshelf (Chỉ hiển thị sách của bạn + Sửa / Xóa nhanh)
-     ------------------------------------------------------------------------ */
   const shelfContainer = document.getElementById('shelf-books');
   const previewCard = document.getElementById('book-preview');
   const previewVolume = document.getElementById('preview-volume');
@@ -190,9 +181,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('focus', renderBookshelf);
   }
 
-  /* ------------------------------------------------------------------------
-     4. Accessible FAQ Accordion
-     ------------------------------------------------------------------------ */
   const accordionGroups = document.querySelectorAll('[data-accordion]');
   accordionGroups.forEach((group) => {
     const triggers = group.querySelectorAll('.accordion-trigger');
@@ -219,9 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  /* ------------------------------------------------------------------------
-     5. Dynamic Footer Year
-     ------------------------------------------------------------------------ */
   const yearEl = document.getElementById('current-year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 });

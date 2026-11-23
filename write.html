@@ -50,8 +50,8 @@
   <main class="subpage-main">
     <div class="container">
       <header class="section-header" style="margin-bottom: 2rem;">
-        <p class="eyebrow">Author's Study</p>
-        <h1 class="section-title">Compose, Edit &amp; Curate</h1>
+        <p class="eyebrow">Author's shitpost</p>
+        <h1 class="section-title">Compose, edit &amp; curate</h1>
         <p class="section-desc">
           Saved manuscripts, edits, and deletions sync automatically with your homepage bookshelf and reading room.
         </p>
@@ -60,26 +60,25 @@
       <section class="studio-card">
         <div class="mode-tabs" role="tablist">
           <button type="button" class="mode-tab is-active" id="tab-new-book" role="tab" aria-selected="true">
-            + Publish New Book
+            + Publish new book
           </button>
           <button type="button" class="mode-tab" id="tab-new-chapter" role="tab" aria-selected="false">
-            + Add Chapter
+            + Add chapter
           </button>
           <button type="button" class="mode-tab" id="tab-edit" role="tab" aria-selected="false">
-            Edit / Delete Existing
+            Edit / Delete existing
           </button>
         </div>
 
-        <!-- FORM 1: VIẾT SÁCH MỚI -->
         <form class="studio-form" id="form-new-book">
           <div class="form-row">
             <div class="form-group">
-              <label for="book-title-input">Book Title (Vietnamese or English)</label>
-              <input id="book-title-input" class="form-control" type="text" required placeholder="e.g., Hoa Súng Mùa Hạ">
+              <label for="book-title-input">Book title</label>
+              <input id="book-title-input" class="form-control" type="text" required placeholder="e.g. My first story">
             </div>
             <div class="form-group">
               <label for="book-genre-input">Genre / Subtitle</label>
-              <input id="book-genre-input" class="form-control" type="text" placeholder="e.g., Short Novel, Poetry">
+              <input id="book-genre-input" class="form-control" type="text" placeholder="e.g., Short novel, poetry">
             </div>
           </div>
 
@@ -87,59 +86,58 @@
             <div class="form-group">
               <label for="book-color-input">Spine &amp; Cover Binding Color</label>
               <select id="book-color-input" class="form-control">
-                <option value="forest">Deep Forest (#0A3323)</option>
-                <option value="teal">Slate Teal (#105666)</option>
-                <option value="moss">Vintage Moss (#839958)</option>
-                <option value="rose">Dusty Rose (#D3968C)</option>
-                <option value="cream">Antique Parchment (#F7F4D5)</option>
+                <option value="forest">Deep forest</option>
+                <option value="teal">Slate teal</option>
+                <option value="moss">Vintage moss</option>
+                <option value="rose">Dusty rose</option>
+                <option value="cream">Antique parchment</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="book-size-input">Volume Height</label>
+              <label for="book-size-input">Volume height</label>
               <select id="book-size-input" class="form-control">
-                <option value="tall">Tall Edition</option>
-                <option value="grand">Grand Folio</option>
-                <option value="medium">Pocket Medium</option>
+                <option value="tall">Le grand format</option>
+                <option value="grand">Le format moyen</option>
+                <option value="medium">Le format poche</option>
               </select>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="book-tag-input">Status Tag</label>
-              <input id="book-tag-input" class="form-control" type="text" placeholder="e.g., Ongoing Series, Complete">
+              <label for="book-tag-input">Status tag</label>
+              <input id="book-tag-input" class="form-control" type="text" placeholder="e.g. Ongoing, Complete">
             </div>
             <div class="form-group">
-              <label for="first-chapter-title">Opening Chapter Title</label>
-              <input id="first-chapter-title" class="form-control" type="text" required placeholder="e.g., Chương I: Khởi Đầu">
+              <label for="first-chapter-title">Chapter title</label>
+              <input id="first-chapter-title" class="form-control" type="text" required placeholder="e.g. Chapter I: In the beninging">
             </div>
           </div>
 
           <div class="form-group">
-            <label for="book-desc-input">Short Synopsis (Shown on Catalogue Card)</label>
-            <input id="book-desc-input" class="form-control" type="text" required placeholder="A brief poetic summary of this volume...">
+            <label for="book-desc-input">Short synopsis</label>
+            <input id="book-desc-input" class="form-control" type="text" required placeholder="This will be shown in preview cards">
           </div>
 
           <div class="form-group">
             <label for="first-chapter-content">Manuscript Content</label>
-            <textarea id="first-chapter-content" class="form-control" required placeholder="Begin writing your story here... (Press Enter for new paragraphs)"></textarea>
+            <textarea id="first-chapter-content" class="form-control" required placeholder="Begin writing your story here..."></textarea>
           </div>
 
           <div>
-            <button type="submit" class="btn btn-primary">Save &amp; Place on Bookshelf</button>
+            <button type="submit" class="btn btn-primary">Save &amp; Place on bookshelf</button>
           </div>
         </form>
 
-        <!-- FORM 2: THÊM TẬP/CHƯƠNG MỚI VÀO SÁCH CÓ SẴN -->
         <form class="studio-form" id="form-new-chapter" style="display: none;">
           <div class="form-group">
-            <label for="existing-book-select">Select Book from Bookshelf</label>
+            <label for="existing-book-select">Select book from bookshelf</label>
             <select id="existing-book-select" class="form-control" required></select>
           </div>
 
           <div class="form-group">
-            <label for="append-chapter-title">New Chapter Title</label>
-            <input id="append-chapter-title" class="form-control" type="text" required placeholder="e.g., Chương II: Lời Hẹn Cuối Thu">
+            <label for="append-chapter-title">New chapter title</label>
+            <input id="append-chapter-title" class="form-control" type="text" required placeholder="e.g. Chapter II: The next chapter">
           </div>
 
           <div class="form-group">
@@ -148,11 +146,10 @@
           </div>
 
           <div>
-            <button type="submit" class="btn btn-primary">Save Chapter to Volume</button>
+            <button type="submit" class="btn btn-primary">Save chapter to volume</button>
           </div>
         </form>
 
-        <!-- PANEL 3: SỬA & XÓA SÁCH / CHƯƠNG -->
         <div id="panel-edit" style="display: none;">
           <p id="edit-empty-msg" style="display: none; font-style: italic; color: var(--ink-muted);">
             Your bookshelf is empty. Publish your first book to edit or manage chapters.
@@ -161,13 +158,13 @@
           <div id="edit-workspace">
             <form class="studio-form" id="form-edit-book">
               <div class="form-group">
-                <label for="edit-book-select">Choose Book to Edit</label>
+                <label for="edit-book-select">Choose book to edit</label>
                 <select id="edit-book-select" class="form-control"></select>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
-                  <label for="edit-book-title">Book Title</label>
+                  <label for="edit-book-title">Book title</label>
                   <input id="edit-book-title" class="form-control" type="text" required>
                 </div>
                 <div class="form-group">
@@ -178,39 +175,39 @@
 
               <div class="form-row">
                 <div class="form-group">
-                  <label for="edit-book-color">Binding Color</label>
+                  <label for="edit-book-color">Binding color</label>
                   <select id="edit-book-color" class="form-control">
-                    <option value="forest">Deep Forest (#0A3323)</option>
-                    <option value="teal">Slate Teal (#105666)</option>
-                    <option value="moss">Vintage Moss (#839958)</option>
-                    <option value="rose">Dusty Rose (#D3968C)</option>
-                    <option value="cream">Antique Parchment (#F7F4D5)</option>
+                    <option value="forest">Deep forest</option>
+                    <option value="teal">Slate teal</option>
+                    <option value="moss">Vintage moss</option>
+                    <option value="rose">Dusty rose</option>
+                    <option value="cream">Antique parchment</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="edit-book-size">Volume Height</label>
+                  <label for="edit-book-size">Volume height</label>
                   <select id="edit-book-size" class="form-control">
-                    <option value="tall">Tall Edition</option>
-                    <option value="grand">Grand Folio</option>
-                    <option value="medium">Pocket Medium</option>
+                    <option value="tall">Le grand format</option>
+                    <option value="grand">Le format moyen</option>
+                    <option value="medium">Le format poche</option>
                   </select>
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
-                  <label for="edit-book-tag">Status Tag</label>
+                  <label for="edit-book-tag">Status tag</label>
                   <input id="edit-book-tag" class="form-control" type="text">
                 </div>
                 <div class="form-group">
-                  <label for="edit-book-desc">Short Synopsis</label>
+                  <label for="edit-book-desc">Short synopsis</label>
                   <input id="edit-book-desc" class="form-control" type="text" required>
                 </div>
               </div>
 
               <div class="edit-btn-row">
-                <button type="submit" class="btn btn-primary">Save Book Changes</button>
-                <button type="button" class="btn-danger-outline" id="btn-delete-selected-book">Delete This Book</button>
+                <button type="submit" class="btn btn-primary">Save book changes</button>
+                <button type="button" class="btn-danger-outline" id="btn-delete-selected-book">Delete this book</button>
               </div>
             </form>
 
@@ -218,34 +215,33 @@
 
             <form class="studio-form" id="form-edit-chapter">
               <div class="form-group">
-                <label for="edit-chapter-select">Choose Chapter to Edit</label>
+                <label for="edit-chapter-select">Choose chapter to edit</label>
                 <select id="edit-chapter-select" class="form-control"></select>
               </div>
 
               <div class="form-group">
-                <label for="edit-chapter-title">Chapter Title</label>
+                <label for="edit-chapter-title">Chapter title</label>
                 <input id="edit-chapter-title" class="form-control" type="text" required>
               </div>
 
               <div class="form-group">
-                <label for="edit-chapter-content">Chapter Content</label>
+                <label for="edit-chapter-content">Chapter content</label>
                 <textarea id="edit-chapter-content" class="form-control" required></textarea>
               </div>
 
               <div class="edit-btn-row">
-                <button type="submit" class="btn btn-primary">Save Chapter Changes</button>
-                <button type="button" class="btn-danger-outline" id="btn-delete-selected-chapter">Delete This Chapter</button>
+                <button type="submit" class="btn btn-primary">Save chapter changes</button>
+                <button type="button" class="btn-danger-outline" id="btn-delete-selected-chapter">Delete this chapter</button>
               </div>
             </form>
           </div>
         </div>
 
-        <!-- Thông báo sau khi lưu / sửa / xóa -->
         <div class="studio-notice" id="studio-notice" role="status" aria-live="polite">
           <p id="notice-text"></p>
           <div class="studio-notice-actions">
-            <a href="reader.html" id="notice-read-link" target="_blank" rel="noopener">Open in Reading Room &rarr;</a>
-            <a href="index.html#bookshelf">View Updated Bookshelf &rarr;</a>
+            <a href="reader.html" id="notice-read-link" target="_blank" rel="noopener">Open in reading room &rarr;</a>
+            <a href="index.html#bookshelf">View updated bookshelf &rarr;</a>
           </div>
         </div>
       </section>
@@ -284,7 +280,7 @@
         if (!books.length) {
           const opt = document.createElement('option');
           opt.value = '';
-          opt.textContent = 'No books on shelf yet — publish a new book first';
+          opt.textContent = 'No books on shelf yet - publish a new book first';
           bookSelect.appendChild(opt);
           if (submitBtn) submitBtn.disabled = true;
           return;
