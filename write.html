@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Writing Desk — MOURIR D'AMOUR</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400&family=Yrsa:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="index.html#top" class="brand" aria-label="MOURIR D'AMOUR Home">
+        <span class="brand-ornament" aria-hidden="true">❦</span>
+        <span class="brand-text">
+          <span class="brand-name">MOURIR D'AMOUR</span>
+          <span class="brand-sub">Minerva's</span>
+        </span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="primary-nav"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <nav class="site-nav" id="primary-nav" aria-label="Writer Navigation">
+        <ul class="nav-list">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#bookshelf" class="nav-link">The Bookshelf</a></li>
+          <li><a href="index.html#faq" class="nav-link">Questions</a></li>
+          <li><a href="write.html" class="nav-link">Write</a></li>
+          <li><a href="index.html#contact" class="nav-link nav-link--accent">Letters</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="subpage-main">
+    <div class="container">
+      <header class="section-header" style="margin-bottom: 2rem;">
+        <p class="eyebrow">Author's Study</p>
+        <h1 class="section-title">Compose, Edit &amp; Curate</h1>
+        <p class="section-desc">
+          Saved manuscripts, edits, and deletions sync automatically with your homepage bookshelf and reading room.
+        </p>
+      </header>
+
+      <section class="studio-card">
+        <div class="mode-tabs" role="tablist">
+          <button type="button" class="mode-tab is-active" id="tab-new-book" role="tab" aria-selected="true">
+            + Publish New Book
+          </button>
+          <button type="button" class="mode-tab" id="tab-new-chapter" role="tab" aria-selected="false">
+            + Add Chapter
+          </button>
+          <button type="button" class="mode-tab" id="tab-edit" role="tab" aria-selected="false">
+            Edit / Delete Existing
+          </button>
+        </div>
+
+        <!-- FORM 1: VIẾT SÁCH MỚI -->
+        <form class="studio-form" id="form-new-book">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-title-input">Book Title (Vietnamese or English)</label>
+              <input id="book-title-input" class="form-control" type="text" required placeholder="e.g., Hoa Súng Mùa Hạ">
+            </div>
+            <div class="form-group">
+              <label for="book-genre-input">Genre / Subtitle</label>
+              <input id="book-genre-input" class="form-control" type="text" placeholder="e.g., Short Novel, Poetry">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-color-input">Spine &amp; Cover Binding Color</label>
+              <select id="book-color-input" class="form-control">
+                <option value="forest">Deep Forest (#0A3323)</option>
+                <option value="teal">Slate Teal (#105666)</option>
+                <option value="moss">Vintage Moss (#839958)</option>
+                <option value="rose">Dusty Rose (#D3968C)</option>
+                <option value="cream">Antique Parchment (#F7F4D5)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="book-size-input">Volume Height</label>
+              <select id="book-size-input" class="form-control">
+                <option value="tall">Tall Edition</option>
+                <option value="grand">Grand Folio</option>
+                <option value="medium">Pocket Medium</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="book-tag-input">Status Tag</label>
+              <input id="book-tag-input" class="form-control" type="text" placeholder="e.g., Ongoing Series, Complete">
+            </div>
+            <div class="form-group">
+              <label for="first-chapter-title">Opening Chapter Title</label>
+              <input id="first-chapter-title" class="form-control" type="text" required placeholder="e.g., Chương I: Khởi Đầu">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="book-desc-input">Short Synopsis (Shown on Catalogue Card)</label>
+            <input id="book-desc-input" class="form-control" type="text" required placeholder="A brief poetic summary of this volume...">
+          </div>
+
+          <div class="form-group">
+            <label for="first-chapter-content">Manuscript Content</label>
+            <textarea id="first-chapter-content" class="form-control" required placeholder="Begin writing your story here... (Press Enter for new paragraphs)"></textarea>
+          </div>
+
+          <div>
+            <button type="submit" class="btn btn-primary">Save &amp; Place on Bookshelf</button>
+          </div>
+        </form>
+
+        <!-- FORM 2: THÊM TẬP/CHƯƠNG MỚI VÀO SÁCH CÓ SẴN -->
+        <form class="studio-form" id="form-new-chapter" style="display: none;">
+          <div class="form-group">
+            <label for="existing-book-select">Select Book from Bookshelf</label>
+            <select id="existing-book-select" class="form-control" required></select>
+          </div>
+
+          <div class="form-group">
+            <label for="append-chapter-title">New Chapter Title</label>
+            <input id="append-chapter-title" class="form-control" type="text" required placeholder="e.g., Chương II: Lời Hẹn Cuối Thu">
+          </div>
+
+          <div class="form-group">
+            <label for="append-chapter-content">Chapter Content</label>
+            <textarea id="append-chapter-content" class="form-control" required placeholder="Write the next chapter here..."></textarea>
+          </div>
+
+          <div>
+            <button type="submit" class="btn btn-primary">Save Chapter to Volume</button>
+          </div>
+        </form>
+
+        <!-- PANEL 3: SỬA & XÓA SÁCH / CHƯƠNG -->
+        <div id="panel-edit" style="display: none;">
+          <p id="edit-empty-msg" style="display: none; font-style: italic; color: var(--ink-muted);">
+            Your bookshelf is empty. Publish your first book to edit or manage chapters.
+          </p>
+
+          <div id="edit-workspace">
+            <form class="studio-form" id="form-edit-book">
+              <div class="form-group">
+                <label for="edit-book-select">Choose Book to Edit</label>
+                <select id="edit-book-select" class="form-control"></select>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="edit-book-title">Book Title</label>
+                  <input id="edit-book-title" class="form-control" type="text" required>
+                </div>
+                <div class="form-group">
+                  <label for="edit-book-genre">Genre / Subtitle</label>
+                  <input id="edit-book-genre" class="form-control" type="text">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="edit-book-color">Binding Color</label>
+                  <select id="edit-book-color" class="form-control">
+                    <option value="forest">Deep Forest (#0A3323)</option>
+                    <option value="teal">Slate Teal (#105666)</option>
+                    <option value="moss">Vintage Moss (#839958)</option>
+                    <option value="rose">Dusty Rose (#D3968C)</option>
+                    <option value="cream">Antique Parchment (#F7F4D5)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="edit-book-size">Volume Height</label>
+                  <select id="edit-book-size" class="form-control">
+                    <option value="tall">Tall Edition</option>
+                    <option value="grand">Grand Folio</option>
+                    <option value="medium">Pocket Medium</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="edit-book-tag">Status Tag</label>
+                  <input id="edit-book-tag" class="form-control" type="text">
+                </div>
+                <div class="form-group">
+                  <label for="edit-book-desc">Short Synopsis</label>
+                  <input id="edit-book-desc" class="form-control" type="text" required>
+                </div>
+              </div>
+
+              <div class="edit-btn-row">
+                <button type="submit" class="btn btn-primary">Save Book Changes</button>
+                <button type="button" class="btn-danger-outline" id="btn-delete-selected-book">Delete This Book</button>
+              </div>
+            </form>
+
+            <hr class="edit-divider">
+
+            <form class="studio-form" id="form-edit-chapter">
+              <div class="form-group">
+                <label for="edit-chapter-select">Choose Chapter to Edit</label>
+                <select id="edit-chapter-select" class="form-control"></select>
+              </div>
+
+              <div class="form-group">
+                <label for="edit-chapter-title">Chapter Title</label>
+                <input id="edit-chapter-title" class="form-control" type="text" required>
+              </div>
+
+              <div class="form-group">
+                <label for="edit-chapter-content">Chapter Content</label>
+                <textarea id="edit-chapter-content" class="form-control" required></textarea>
+              </div>
+
+              <div class="edit-btn-row">
+                <button type="submit" class="btn btn-primary">Save Chapter Changes</button>
+                <button type="button" class="btn-danger-outline" id="btn-delete-selected-chapter">Delete This Chapter</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Thông báo sau khi lưu / sửa / xóa -->
+        <div class="studio-notice" id="studio-notice" role="status" aria-live="polite">
+          <p id="notice-text"></p>
+          <div class="studio-notice-actions">
+            <a href="reader.html" id="notice-read-link" target="_blank" rel="noopener">Open in Reading Room &rarr;</a>
+            <a href="index.html#bookshelf">View Updated Bookshelf &rarr;</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="library-data.js"></script>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tabBook = document.getElementById('tab-new-book');
+      const tabChapter = document.getElementById('tab-new-chapter');
+      const tabEdit = document.getElementById('tab-edit');
+      const formBook = document.getElementById('form-new-book');
+      const formChapter = document.getElementById('form-new-chapter');
+      const panelEdit = document.getElementById('panel-edit');
+      const bookSelect = document.getElementById('existing-book-select');
+      const notice = document.getElementById('studio-notice');
+      const noticeText = document.getElementById('notice-text');
+      const noticeReadLink = document.getElementById('notice-read-link');
+
+      const editEmptyMsg = document.getElementById('edit-empty-msg');
+      const editWorkspace = document.getElementById('edit-workspace');
+      const editBookSelect = document.getElementById('edit-book-select');
+      const editChapterSelect = document.getElementById('edit-chapter-select');
+      const formEditBook = document.getElementById('form-edit-book');
+      const formEditChapter = document.getElementById('form-edit-chapter');
+
+      const params = new URLSearchParams(window.location.search);
+
+      const populateBookSelect = (selectedId) => {
+        const books = window.LibraryStore.getAll();
+        const submitBtn = formChapter.querySelector('button[type="submit"]');
+        bookSelect.innerHTML = '';
+
+        if (!books.length) {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = 'No books on shelf yet — publish a new book first';
+          bookSelect.appendChild(opt);
+          if (submitBtn) submitBtn.disabled = true;
+          return;
+        }
+
+        if (submitBtn) submitBtn.disabled = false;
+        books.forEach((b) => {
+          const opt = document.createElement('option');
+          opt.value = b.id;
+          opt.textContent = `${b.title} (${b.chapters.length} chapters)`;
+          if (b.id === selectedId) opt.selected = true;
+          bookSelect.appendChild(opt);
+        });
+      };
+
+      const loadChapterFields = (book, preferredChapterId) => {
+        editChapterSelect.innerHTML = '';
+        const chTitleInput = document.getElementById('edit-chapter-title');
+        const chContentInput = document.getElementById('edit-chapter-content');
+        const saveChBtn = formEditChapter.querySelector('button[type="submit"]');
+        const delChBtn = document.getElementById('btn-delete-selected-chapter');
+
+        if (!book || !book.chapters.length) {
+          const opt = document.createElement('option');
+          opt.textContent = 'No chapters in this book yet';
+          editChapterSelect.appendChild(opt);
+          chTitleInput.value = '';
+          chContentInput.value = '';
+          chTitleInput.disabled = true;
+          chContentInput.disabled = true;
+          saveChBtn.disabled = true;
+          delChBtn.disabled = true;
+          return;
+        }
+
+        chTitleInput.disabled = false;
+        chContentInput.disabled = false;
+        saveChBtn.disabled = false;
+        delChBtn.disabled = false;
+
+        book.chapters.forEach((ch) => {
+          const opt = document.createElement('option');
+          opt.value = ch.id;
+          opt.textContent = ch.title;
+          if (ch.id === preferredChapterId) opt.selected = true;
+          editChapterSelect.appendChild(opt);
+        });
+
+        const activeCh =
+          book.chapters.find((ch) => ch.id === editChapterSelect.value) || book.chapters[0];
+        editChapterSelect.value = activeCh.id;
+        chTitleInput.value = activeCh.title;
+        chContentInput.value = activeCh.content;
+      };
+
+      const loadEditWorkspace = (preferredBookId, preferredChapterId) => {
+        const books = window.LibraryStore.getAll();
+        if (!books.length) {
+          editEmptyMsg.style.display = 'block';
+          editWorkspace.style.display = 'none';
+          return;
+        }
+
+        editEmptyMsg.style.display = 'none';
+        editWorkspace.style.display = 'block';
+        editBookSelect.innerHTML = '';
+
+        books.forEach((b) => {
+          const opt = document.createElement('option');
+          opt.value = b.id;
+          opt.textContent = b.title;
+          if (b.id === preferredBookId) opt.selected = true;
+          editBookSelect.appendChild(opt);
+        });
+
+        const selected = books.find((b) => b.id === editBookSelect.value) || books[0];
+        editBookSelect.value = selected.id;
+        document.getElementById('edit-book-title').value = selected.title;
+        document.getElementById('edit-book-genre').value =
+          selected.genre || ((selected.volumeLabel || '').split('•')[1] || '').trim();
+        document.getElementById('edit-book-color').value = selected.color || 'forest';
+        document.getElementById('edit-book-size').value = selected.size || 'tall';
+        document.getElementById('edit-book-tag').value = selected.tag || '';
+        document.getElementById('edit-book-desc').value = selected.desc || '';
+
+        loadChapterFields(selected, preferredChapterId);
+      };
+
+      const switchMode = (mode) => {
+        const isBook = mode === 'book';
+        const isChapter = mode === 'chapter';
+        const isEdit = mode === 'edit';
+
+        tabBook.classList.toggle('is-active', isBook);
+        tabBook.setAttribute('aria-selected', String(isBook));
+        tabChapter.classList.toggle('is-active', isChapter);
+        tabChapter.setAttribute('aria-selected', String(isChapter));
+        tabEdit.classList.toggle('is-active', isEdit);
+        tabEdit.setAttribute('aria-selected', String(isEdit));
+
+        formBook.style.display = isBook ? 'flex' : 'none';
+        formChapter.style.display = isChapter ? 'flex' : 'none';
+        panelEdit.style.display = isEdit ? 'block' : 'none';
+        notice.classList.remove('is-visible');
+
+        if (isChapter) populateBookSelect(bookSelect.value || params.get('book'));
+        if (isEdit) loadEditWorkspace(editBookSelect.value || params.get('book'), params.get('ch'));
+      };
+
+      tabBook.addEventListener('click', () => switchMode('book'));
+      tabChapter.addEventListener('click', () => switchMode('chapter'));
+      tabEdit.addEventListener('click', () => switchMode('edit'));
+
+      editBookSelect.addEventListener('change', () => {
+        loadEditWorkspace(editBookSelect.value, null);
+      });
+
+      editChapterSelect.addEventListener('change', () => {
+        const book = window.LibraryStore.getById(editBookSelect.value);
+        loadChapterFields(book, editChapterSelect.value);
+      });
+
+      formBook.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const saved = window.LibraryStore.addBook({
+          title: document.getElementById('book-title-input').value,
+          genre: document.getElementById('book-genre-input').value,
+          tag: document.getElementById('book-tag-input').value,
+          color: document.getElementById('book-color-input').value,
+          size: document.getElementById('book-size-input').value,
+          desc: document.getElementById('book-desc-input').value,
+          chapterTitle: document.getElementById('first-chapter-title').value,
+          chapterContent: document.getElementById('first-chapter-content').value
+        });
+
+        formBook.reset();
+        populateBookSelect(saved.id);
+        noticeText.textContent = `"${saved.title}" has been bound and placed on the homepage bookshelf.`;
+        noticeReadLink.style.display = 'inline';
+        noticeReadLink.href = `reader.html?id=${encodeURIComponent(saved.id)}`;
+        notice.classList.add('is-visible');
+      });
+
+      formChapter.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const bookId = bookSelect.value;
+        const result = window.LibraryStore.addChapter(bookId, {
+          title: document.getElementById('append-chapter-title').value,
+          content: document.getElementById('append-chapter-content').value
+        });
+
+        if (!result) return;
+        formChapter.reset();
+        populateBookSelect(bookId);
+        const lastIdx = result.book.chapters.length - 1;
+        noticeText.textContent = `Added "${result.chapter.title}" to "${result.book.title}".`;
+        noticeReadLink.style.display = 'inline';
+        noticeReadLink.href = `reader.html?id=${encodeURIComponent(bookId)}&ch=${lastIdx}`;
+        notice.classList.add('is-visible');
+      });
+
+      formEditBook.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const updated = window.LibraryStore.updateBook(editBookSelect.value, {
+          title: document.getElementById('edit-book-title').value,
+          genre: document.getElementById('edit-book-genre').value,
+          tag: document.getElementById('edit-book-tag').value,
+          color: document.getElementById('edit-book-color').value,
+          size: document.getElementById('edit-book-size').value,
+          desc: document.getElementById('edit-book-desc').value
+        });
+        if (!updated) return;
+        loadEditWorkspace(updated.id, editChapterSelect.value);
+        noticeText.textContent = `Saved changes to "${updated.title}".`;
+        noticeReadLink.style.display = 'inline';
+        noticeReadLink.href = `reader.html?id=${encodeURIComponent(updated.id)}`;
+        notice.classList.add('is-visible');
+      });
+
+      document.getElementById('btn-delete-selected-book').addEventListener('click', () => {
+        const book = window.LibraryStore.getById(editBookSelect.value);
+        if (!book || !window.confirm(`Delete "${book.title}" permanently?`)) return;
+        window.LibraryStore.deleteBook(book.id);
+        loadEditWorkspace(null, null);
+        populateBookSelect(null);
+        noticeText.textContent = `Deleted "${book.title}" from the bookshelf.`;
+        noticeReadLink.style.display = 'none';
+        notice.classList.add('is-visible');
+      });
+
+      formEditChapter.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const result = window.LibraryStore.updateChapter(
+          editBookSelect.value,
+          editChapterSelect.value,
+          {
+            title: document.getElementById('edit-chapter-title').value,
+            content: document.getElementById('edit-chapter-content').value
+          }
+        );
+        if (!result) return;
+        const chIdx = result.book.chapters.findIndex((c) => c.id === result.chapter.id);
+        loadChapterFields(result.book, result.chapter.id);
+        noticeText.textContent = `Saved edits to "${result.chapter.title}".`;
+        noticeReadLink.style.display = 'inline';
+        noticeReadLink.href = `reader.html?id=${encodeURIComponent(result.book.id)}&ch=${Math.max(0, chIdx)}`;
+        notice.classList.add('is-visible');
+      });
+
+      document.getElementById('btn-delete-selected-chapter').addEventListener('click', () => {
+        const book = window.LibraryStore.getById(editBookSelect.value);
+        const ch = book && book.chapters.find((c) => c.id === editChapterSelect.value);
+        if (!ch || !window.confirm(`Delete chapter "${ch.title}"?`)) return;
+        const updatedBook = window.LibraryStore.deleteChapter(book.id, ch.id);
+        loadChapterFields(updatedBook, null);
+        noticeText.textContent = `Deleted chapter "${ch.title}".`;
+        noticeReadLink.style.display = 'inline';
+        noticeReadLink.href = `reader.html?id=${encodeURIComponent(book.id)}`;
+        notice.classList.add('is-visible');
+      });
+
+      populateBookSelect(params.get('book'));
+      if (params.get('mode') === 'chapter') {
+        switchMode('chapter');
+      } else if (params.get('mode') === 'edit') {
+        switchMode('edit');
+        if (params.get('ch')) {
+          formEditChapter.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+  </script>
+</body>
+</html>

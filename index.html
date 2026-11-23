@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A vintage European-inspired personal writing blog and bookshelf of stories.">
+  <title>MOURIR D'AMOUR — Minerva's</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400&family=Yrsa:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ================= NAVIGATION BAR ================= -->
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="#top" class="brand" aria-label="MOURIR D'AMOUR Home">
+        <span class="brand-ornament" aria-hidden="true">❦</span>
+        <span class="brand-text">
+          <span class="brand-name">MOURIR D'AMOUR</span>
+          <span class="brand-sub">Minerva's</span>
+        </span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="primary-nav"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <nav class="site-nav" id="primary-nav" aria-label="Primary Navigation">
+        <ul class="nav-list">
+          <li><a href="#home" class="nav-link">Home</a></li>
+          <li><a href="#bookshelf" class="nav-link">The Bookshelf</a></li>
+          <li><a href="#faq" class="nav-link">Questions</a></li>
+          <li><a href="write.html" class="nav-link">Write</a></li>
+          <li><a href="#contact" class="nav-link nav-link--accent">Letters</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= HERO BANNER ================= -->
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <p class="eyebrow">Personal &bull; Anonymous</p>
+          <h1 class="hero-title">
+            Mon cœur se tait mais il t'appartient.
+          </h1>
+          <p class="hero-lead">
+            A secret corner where a person who don't believe in love, don't deserve to be loved is hiding. However, they wish to bring love and hope to their world through these naive and tender stories.
+          </p>
+          <div class="hero-actions">
+            <a href="#bookshelf" class="btn btn-primary">MY BOOKSHELF</a>
+            <a href="#faq" class="btn btn-ghost">Question? &rarr;</a>
+          </div>
+        </div>
+
+        <aside class="hero-frame" aria-label="Opening Epigraph">
+          <div class="bookplate">
+            <div class="bookplate-inner">
+              <span class="bookplate-chapter">A RHAPSODY FOR CROWN PRINCE</span>
+              <svg class="botanical-mark" viewBox="0 0 120 40" fill="none" aria-hidden="true">
+                <path d="M10 20C30 20 42 8 60 20C78 32 90 20 110 20" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M60 6C56 14 56 26 60 34C64 26 64 14 60 6Z" fill="currentColor" fill-opacity="0.22" stroke="currentColor" stroke-width="1"/>
+                <circle cx="60" cy="20" r="2.5" fill="currentColor"/>
+              </svg>
+              <blockquote class="bookplate-quote">
+                “I was a peace in my own world wrapped in the comfort of solitude.”
+              </blockquote>
+              <p class="bookplate-meta">- Fabian de Valois -</p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <div class="section-divider" aria-hidden="true">
+      <span></span><em>✦</em><span></span>
+    </div>
+
+    <!-- ================= INTERACTIVE BOOKSHELF ================= -->
+    <section class="bookshelf-section" id="bookshelf">
+      <div class="container">
+        <header class="section-header">
+          <p class="eyebrow">Private Library</p>
+          <h2 class="section-title">The Story Bookshelf</h2>
+          <p class="section-desc">
+            Hover over or tap any spine to gently slide a volume forward and inspect its catalogue card below.
+          </p>
+        </header>
+
+        <div class="bookcase">
+          <div class="bookcase-crown" aria-hidden="true">
+            <span>Ex Libris &bull; Collected Works</span>
+          </div>
+
+          <div class="shelf-cavity">
+            <div class="shelf-books" id="shelf-books" role="list" aria-label="Shelf of stories"></div>
+          </div>
+
+          <div class="shelf-ledge" aria-hidden="true"></div>
+        </div>
+
+        <!-- Library Card Preview -->
+        <aside class="reading-card" aria-live="polite" id="book-preview" hidden>
+          <div class="reading-card-inner">
+            <div class="reading-card-meta">
+              <span class="reading-volume" id="preview-volume"></span>
+              <span class="reading-tag" id="preview-tag"></span>
+            </div>
+            <h3 class="reading-title" id="preview-title"></h3>
+            <p class="reading-desc" id="preview-desc"></p>
+            <div class="reading-actions">
+              <a href="reader.html" target="_blank" rel="noopener" class="reading-link" id="preview-link">
+                Open this volume &rarr;
+              </a>
+              <div class="reading-actions-right">
+                <a href="write.html" class="btn-edit-link" id="preview-edit">Edit volume</a>
+                <button type="button" class="btn-danger-link" id="preview-delete">Delete volume</button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ACCORDION ================= -->
+    <section class="faq-section" id="faq">
+      <div class="container faq-layout">
+        <header class="faq-intro">
+          <p class="eyebrow eyebrow--light">Reader Inquiries</p>
+          <h2 class="section-title section-title--light">Frequently Asked Questions</h2>
+          <p class="faq-lead">
+            A few notes regarding publishing rhythms, story permissions, and how to write to the author.
+          </p>
+        </header>
+
+        <div class="accordion" data-accordion>
+          <div class="accordion-item">
+            <h3 class="accordion-heading">
+              <button
+                class="accordion-trigger"
+                type="button"
+                aria-expanded="true"
+                aria-controls="faq-panel-1"
+                id="faq-btn-1"
+              >
+                <span>How often are new chapters and essays published?</span>
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="accordion-panel is-open" id="faq-panel-1" role="region" aria-labelledby="faq-btn-1">
+              <div class="accordion-content">
+                <p>
+                  New chapters and reflections are placed on the shelf every Sunday evening. Occasional unscheduled letters appear whenever the weather or a particular book calls for one.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-heading">
+              <button
+                class="accordion-trigger"
+                type="button"
+                aria-expanded="false"
+                aria-controls="faq-panel-2"
+                id="faq-btn-2"
+              >
+                <span>May I quote or share excerpts from these stories?</span>
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="accordion-panel" id="faq-panel-2" role="region" aria-labelledby="faq-btn-2">
+              <div class="accordion-content">
+                <p>
+                  Short excerpts may be shared freely for non-commercial purposes with credit and a link back to the original page. For full reprints or translations, please send a brief letter first.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-heading">
+              <button
+                class="accordion-trigger"
+                type="button"
+                aria-expanded="false"
+                aria-controls="faq-panel-3"
+                id="faq-btn-3"
+              >
+                <span>Are you open to editorial collaborations or commissions?</span>
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="accordion-panel" id="faq-panel-3" role="region" aria-labelledby="faq-btn-3">
+              <div class="accordion-content">
+                <p>
+                  Yes. I gladly collaborate with independent magazines, artisanal brands, and cultural projects seeking thoughtful, atmospheric storytelling. Feel free to reach out via the correspondence address below.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <h3 class="accordion-heading">
+              <button
+                class="accordion-trigger"
+                type="button"
+                aria-expanded="false"
+                aria-controls="faq-panel-4"
+                id="faq-btn-4"
+              >
+                <span>How can I receive updates when a new volume arrives?</span>
+                <span class="accordion-icon" aria-hidden="true"></span>
+              </button>
+            </h3>
+            <div class="accordion-panel" id="faq-panel-4" role="region" aria-labelledby="faq-btn-4">
+              <div class="accordion-content">
+                <p>
+                  You can join the monthly dispatch via email—a quiet letter sent on the last evening of each month gathering new stories, reading lists, and behind-the-scenes notebook sketches.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer" id="contact">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#top" class="brand brand--light" aria-label="MOURIR D'AMOUR Home">
+            <span class="brand-ornament" aria-hidden="true">❦</span>
+            <span class="brand-text">
+              <span class="brand-name">MOURIR D'AMOUR</span>
+              <span class="brand-sub">Minerva's</span>
+            </span>
+          </a>
+          <p class="footer-about">
+            A quiet personal blog devoted to unhurried stories, classic literature, and thoughtful prose in the old-world tradition.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Index</h4>
+          <ul class="footer-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#bookshelf">The Story Bookshelf</a></li>
+            <li><a href="#faq">Frequently Asked Questions</a></li>
+            <li><a href="write.html">Write Studio</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4 class="footer-heading">Correspondence</h4>
+          <ul class="footer-links">
+            <li><a href="mailto:letters@mourirdamour.blog">letters@mourirdamour.blog</a></li>
+            <li><a href="#top">Instagram / @mourirdamour</a></li>
+            <li><a href="#top">Substack / Monthly Dispatch</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <span id="current-year">2026</span> MOURIR D'AMOUR &mdash; Minerva's. All rights reserved.</p>
+        <a href="#top" class="back-to-top">Back to top &uarr;</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="library-data.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

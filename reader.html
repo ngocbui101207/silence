@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Room — MOURIR D'AMOUR</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,400&family=Yrsa:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="pages.css">
+</head>
+<body>
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a href="index.html#top" class="brand" aria-label="MOURIR D'AMOUR Home">
+        <span class="brand-ornament" aria-hidden="true">❦</span>
+        <span class="brand-text">
+          <span class="brand-name">MOURIR D'AMOUR</span>
+          <span class="brand-sub">Minerva's</span>
+        </span>
+      </a>
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="primary-nav"
+      >
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+
+      <nav class="site-nav" id="primary-nav" aria-label="Reader Navigation">
+        <ul class="nav-list">
+          <li><a href="index.html#home" class="nav-link">Home</a></li>
+          <li><a href="index.html#bookshelf" class="nav-link">The Bookshelf</a></li>
+          <li><a href="index.html#faq" class="nav-link">Questions</a></li>
+          <li><a href="write.html" class="nav-link">Write</a></li>
+          <li><a href="index.html#contact" class="nav-link nav-link--accent">Letters</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="subpage-main">
+    <div class="container">
+      <div class="subpage-topbar">
+        <a href="index.html#bookshelf" class="back-link">&larr; Return to The Bookshelf</a>
+        <span class="eyebrow" style="margin: 0;" id="topbar-tag">Reading Edition</span>
+      </div>
+
+      <div class="reader-layout">
+        <!-- Mục lục các tập/chương -->
+        <aside class="toc-panel" id="toc-panel">
+          <p class="toc-volume" id="book-volume"></p>
+          <h1 class="toc-book-title" id="book-title"></h1>
+          <p class="toc-desc" id="book-desc"></p>
+
+          <h2 class="toc-heading">Table of Contents</h2>
+          <ul class="chapter-list" id="chapter-list"></ul>
+
+          <a href="write.html" class="toc-add-btn" id="add-chapter-link">+ Write New Chapter</a>
+          <a href="write.html" class="toc-edit-btn" id="edit-book-link">Edit Volume Info</a>
+          <button type="button" class="toc-delete-btn" id="delete-book-btn">Delete This Volume</button>
+        </aside>
+
+        <!-- Trang giấy đọc nội dung -->
+        <article class="manuscript-sheet">
+          <div class="manuscript-header-row">
+            <p class="manuscript-date" id="chapter-date"></p>
+            <div class="manuscript-actions">
+              <a href="write.html" class="btn-edit-link" id="edit-chapter-link">Edit this chapter</a>
+              <button type="button" class="btn-danger-link" id="delete-chapter-btn">Delete this chapter</button>
+            </div>
+          </div>
+
+          <h2 class="manuscript-title" id="chapter-title"></h2>
+          <div class="manuscript-body" id="chapter-body"></div>
+
+          <nav class="chapter-pager" aria-label="Chapter Navigation">
+            <button type="button" class="pager-btn" id="prev-chapter">&larr; Previous Chapter</button>
+            <button type="button" class="pager-btn" id="next-chapter">Next Chapter &rarr;</button>
+          </nav>
+        </article>
+      </div>
+    </div>
+  </main>
+
+  <script src="library-data.js"></script>
+  <script src="script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const bookId = params.get('id');
+      let book = window.LibraryStore.getById(bookId);
+
+      const tocPanel = document.getElementById('toc-panel');
+      const chapterListEl = document.getElementById('chapter-list');
+      const dateEl = document.getElementById('chapter-date');
+      const titleEl = document.getElementById('chapter-title');
+      const bodyEl = document.getElementById('chapter-body');
+      const prevBtn = document.getElementById('prev-chapter');
+      const nextBtn = document.getElementById('next-chapter');
+      const editBookLink = document.getElementById('edit-book-link');
+      const deleteBookBtn = document.getElementById('delete-book-btn');
+      const editChapterLink = document.getElementById('edit-chapter-link');
+      const deleteChapterBtn = document.getElementById('delete-chapter-btn');
+
+      if (!book) {
+        if (tocPanel) tocPanel.style.display = 'none';
+        dateEl.textContent = 'Archive Notice';
+        titleEl.textContent = 'Volume not found';
+        bodyEl.innerHTML = '<p>This book has been deleted or does not exist yet. Return to the bookshelf or open Write to compose your first volume.</p>';
+        editChapterLink.style.display = 'none';
+        deleteChapterBtn.style.display = 'none';
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        return;
+      }
+
+      document.title = `${book.title} — MOURIR D'AMOUR`;
+      document.getElementById('book-volume').textContent = book.volumeLabel;
+      document.getElementById('book-title').textContent = book.title;
+      document.getElementById('book-desc').textContent = book.desc;
+      document.getElementById('topbar-tag').textContent = book.tag;
+      document.getElementById('add-chapter-link').href =
+        `write.html?mode=chapter&book=${encodeURIComponent(book.id)}`;
+      editBookLink.href =
+        `write.html?mode=edit&book=${encodeURIComponent(book.id)}`;
+
+      let activeIndex = Number(params.get('ch')) || 0;
+
+      const renderChapterList = () => {
+        chapterListEl.innerHTML = '';
+        book.chapters.forEach((ch, idx) => {
+          const li = document.createElement('li');
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'chapter-btn';
+          btn.textContent = ch.title;
+          btn.addEventListener('click', () => renderChapter(idx));
+          li.appendChild(btn);
+          chapterListEl.appendChild(li);
+        });
+      };
+
+      const renderChapter = (index) => {
+        if (!book.chapters.length) {
+          dateEl.textContent = 'Empty Volume';
+          titleEl.textContent = 'No chapters left';
+          bodyEl.innerHTML = '<p>All chapters in this volume have been removed. Use "+ Write New Chapter" to add a new one.</p>';
+          editChapterLink.style.display = 'none';
+          deleteChapterBtn.style.display = 'none';
+          prevBtn.disabled = true;
+          nextBtn.disabled = true;
+          return;
+        }
+
+        activeIndex = Math.max(0, Math.min(index, book.chapters.length - 1));
+        const ch = book.chapters[activeIndex];
+
+        editChapterLink.style.display = 'inline-block';
+        editChapterLink.href =
+          `write.html?mode=edit&book=${encodeURIComponent(book.id)}&ch=${encodeURIComponent(ch.id)}`;
+        deleteChapterBtn.style.display = 'inline-block';
+
+        dateEl.textContent = ch.date || 'Manuscript Entry';
+        titleEl.textContent = ch.title;
+
+        bodyEl.innerHTML = '';
+        ch.content
+          .split(/\n+/)
+          .map((p) => p.trim())
+          .filter(Boolean)
+          .forEach((paragraph) => {
+            const p = document.createElement('p');
+            p.textContent = paragraph;
+            bodyEl.appendChild(p);
+          });
+
+        chapterListEl.querySelectorAll('.chapter-btn').forEach((btn, i) => {
+          btn.classList.toggle('is-active', i === activeIndex);
+        });
+
+        prevBtn.disabled = activeIndex === 0;
+        nextBtn.disabled = activeIndex === book.chapters.length - 1;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      deleteChapterBtn.addEventListener('click', () => {
+        const ch = book.chapters[activeIndex];
+        if (!ch) return;
+        if (!window.confirm(`Delete chapter "${ch.title}"?`)) return;
+        book = window.LibraryStore.deleteChapter(book.id, ch.id);
+        renderChapterList();
+        renderChapter(activeIndex);
+      });
+
+      deleteBookBtn.addEventListener('click', () => {
+        if (!window.confirm(`Delete "${book.title}" and all its chapters permanently?`)) return;
+        window.LibraryStore.deleteBook(book.id);
+        window.location.href = 'index.html#bookshelf';
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (activeIndex > 0) renderChapter(activeIndex - 1);
+      });
+      nextBtn.addEventListener('click', () => {
+        if (activeIndex < book.chapters.length - 1) renderChapter(activeIndex + 1);
+      });
+
+      renderChapterList();
+      renderChapter(activeIndex);
+    });
+  </script>
+</body>
+</html>
