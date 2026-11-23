@@ -322,11 +322,7 @@
           );
           loginForm.reset();
         } catch (err) {
-          console.error(err);
-          loginError.textContent =
-            err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found'
-              ? 'Incorrect email or password. Please try again.'
-              : `Sign-in error: ${err.message}`;
+          loginError.textContent = `Error (${err.code || 'JS'}): ${err.message}`;
           loginError.style.display = 'block';
         } finally {
           btn.disabled = false;
